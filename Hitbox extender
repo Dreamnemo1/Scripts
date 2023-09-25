@@ -1,0 +1,41 @@
+-- This script should be placed in ServerScriptService
+
+-- Get the Players service
+local Players = game:GetService("Players")
+
+-- Define a function to extend a player's hitbox
+local function extendHitbox(player)
+    -- Get the player's character
+    local character = player.Character
+    -- Check if the character exists
+    if character then
+        -- Loop through all the parts in the character
+        for _, part in pairs(character:GetChildren()) do
+            -- Check if the part is a BasePart (such as a limb or a head)
+            if part:IsA("BasePart") then
+                -- Get the current size of the part
+                local size = part.Size
+                -- Set the new size of the part to 10 in all dimensions
+                part.Size = Vector3.new(10, 10, 10)
+                -- Adjust the position of the part to keep it relative to the character's center
+                part.Position = part.Position + (part.Size - size) / 2
+                -- Disable the collision of the part
+                part.CanCollide = false
+            end
+        end
+    end
+end
+
+-- Define a function to refresh the hitboxes every 0.1 seconds
+local function refreshHitboxes()
+    -- Loop through all the players and extend their hitboxes
+    for _, player in pairs(Players:GetPlayers()) do
+        extendHitbox(player)
+    end
+    -- Wait for 0.1 seconds before repeating the function
+    wait(0.1)
+    refreshHitboxes()
+end
+
+-- Start refreshing the hitboxes when the game starts
+refreshHitboxes()
